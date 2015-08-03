@@ -33,23 +33,23 @@ var video, canvas, context,
     showMap = true,
     gui;
 
-
 //-------- network -----
-var socket = io.connect('http://localhost:3000'); //ローカル
+var socket = io.connect('http://10.228.56.31:3001'); //ローカル
 
   //サーバから受け取るイベント
     socket.on("connect", function () {});  // 接続時
     socket.on("disconnect", function (client) {});  // 切断時
-    socket.on("c",function(data){
+    socket.on("canvas",function(data){
       //it should be call back function
       //showVolume('RemoteVolume', data[0]); //graphics
-    update("c",data[0],data[1]);
+    update("canvas",data[0],data[1]);
     console.log(data[0]);
   });
 
 //send data to server
   function sendBroadcast(x, y) {
     var array = new Array(x,y);
+    console.log(x);
     socket.emit("C_to_S_broadcast",array); // サーバへ送信
   }
 //---------------
@@ -63,7 +63,7 @@ function init() {
         return;
     }
 
-    canvas = document.getElementById('c');
+    canvas = document.getElementById("canvas");
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
     canvas.style.top = ((document.getElementById('container').offsetHeight - CANVAS_HEIGHT) / 2 | 0) + 'px';
@@ -107,7 +107,7 @@ function toggleDisplay(e) {
  * Update
  */
 //function update() {
-function update(elementID,x, y){
+function update(elementID,rcvx, rcvy){
     var W = CANVAS_WIDTH,
         H = CANVAS_HEIGHT,
         currImageData,
@@ -243,8 +243,9 @@ function update(elementID,x, y){
     sendBroadcast(ball.x, ball.y);
 
      context.beginPath();
+    console.log(rcvy);
      //context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false);
-    context.arc(x,y, ball.radius, 0, Math.PI * 2, false);
+    context.arc(rcvx,rcvy, ball.radius, 0, Math.PI * 2, false);
     context.fill();
 
     requestAnimationFrame(update);
