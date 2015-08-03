@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>SoundViz</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="volume-meter.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script src="socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script>
+        //--- Network----
+
+         var socket = io.connect('http://10.228.56.31:3001'); //ローカル
+
+
+          //サーバから受け取るイベント
+          socket.on("connect", function () {});  // 接続時
+          socket.on("disconnect", function (client) {});  // 切断時
+          socket.on("canvas",function(data){
+              //it should be call back function
+              rcvData('canvas', data[0], data[1]); //graphics              
+          });
+        
+        //send data to server
+          function sendBroadcast(x, y) {
+            var array = new Array(x,y);
+            socket.emit("C_to_S_broadcast",array); // サーバへ送信
+          }
+
+        
+        //---------------
+        function rcvData(elementID, x,y)
+        {
+
+          var ctx = document.getElementById(elementId).getContext("2d");
+            ctx.beginPath();
+            console.log(x);
+        }
+
+
+    </script>
+    
+</head>
+<body>
+
+     <div class="VideoContainer" width="360" style="float:left">
+            <div  class="volume_bar"><canvas id="canvas" width="360" height="360"></canvas></div>
+        </div>
+    
+</body>
+</html>
